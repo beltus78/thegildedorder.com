@@ -111,3 +111,5 @@ img.is-ph{object-fit:cover}
 @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @media(max-width:960px){.hero-sigil{width:380px;height:380px;right:-140px;opacity:.3}.wa-float span{display:none}.wa-float{padding:.85rem}.main-nav .btn.wa{align-self:flex-start}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+.lang{display:inline-flex;gap:.15rem;border:1px solid var(--line);padding:.15rem}.lang a,.lang b{font-size:.72rem;letter-spacing:.08em;padding:.2rem .45rem;color:var(--muted)}.lang b{background:var(--gold);color:#000}.lang a:hover{color:var(--gold2)}
+.foot-lang{margin-top:1rem;font-size:.85rem;color:var(--muted)}.foot-lang a{display:inline!important}

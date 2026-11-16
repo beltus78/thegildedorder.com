@@ -1,6 +1,7 @@
 # The Gilded Order
 
-Static site + Cloudflare Pages Functions. Shop (48 products), membership, The Archive, legal pages.
+Static site + Cloudflare Pages Functions, in English (/), French (/fr/) and Brazilian Portuguese (/pt/).
+Text lives in `data/i18n.js` (interface), `data/products.i18n.js` and `data/articles.i18n.js`. A new product needs its French and Portuguese entry too, or the build stops with a message.
 
 ## Build
 ```

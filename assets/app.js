@@ -1,4 +1,6 @@
 (function () {
+  var T = window.I18N || {};
+  function f(str, o) { return String(str).replace(/\{(\w+)\}/g, function (_, k) { return o[k] == null ? "" : o[k]; }); }
   var KEY = "gilded-cart";
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
   function save(c) { try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {} render(); }
@@ -14,9 +16,9 @@
       var size = sizeEl ? sizeEl.value : "";
       var c = load(), id = p.slug + (size ? "|" + size : "");
       var found = c.find(function (i) { return i.id === id; });
-      if (found) found.qty += qty; else c.push({ id: id, slug: p.slug, name: p.name + (size ? " (size " + size + ")" : ""), price: p.price, size: size, qty: qty });
+      if (found) found.qty += qty; else c.push({ id: id, slug: p.slug, name: p.name + (size ? " (" + T.size + " " + size + ")" : ""), price: p.price, size: size, qty: qty });
       save(c);
-      btn.textContent = "Added ✓"; setTimeout(function () { btn.textContent = "Add to cart"; }, 1500);
+      btn.textContent = T.added; setTimeout(function () { btn.textContent = T.addToCart; }, 1500);
     });
   });
 
@@ -28,7 +30,7 @@
       document.querySelectorAll("[data-thumb]").forEach(function (x) { x.classList.remove("on"); });
       b.classList.add("on");
       main.classList.remove("is-ph");
-      main.onerror = function () { this.onerror = null; this.src = "/assets/placeholder.svg"; };
+      main.onerror = function () { this.onerror = null; this.src = T.placeholder; };
       main.src = b.getAttribute("data-thumb");
     });
   });
@@ -49,10 +51,10 @@
     count();
     var box = document.querySelector("[data-cart-items]"); if (!box) return;
     var c = load();
-    if (!c.length) { box.innerHTML = '<p class="muted">Your cart is empty. <a href="/shop/">Visit the shop</a></p>'; }
+    if (!c.length) { box.innerHTML = '<p class="muted">' + f(T.cartEmpty, { shop: T.shop }) + '</p>'; }
     else box.innerHTML = c.map(function (i, idx) {
-      return '<div class="cart-item"><img src="/assets/placeholder.svg" alt=""><div><strong>' + i.name.replace(/</g, "&lt;") + '</strong><br><span class="muted">' + money(i.price) +
-        '</span></div><div><input type="number" min="1" value="' + i.qty + '" data-idx="' + idx + '"><br><button data-rm="' + idx + '">Remove</button></div></div>';
+      return '<div class="cart-item"><img src="' + T.placeholder + '" alt=""><div><strong>' + i.name.replace(/</g, "&lt;") + '</strong><br><span class="muted">' + money(i.price) +
+        '</span></div><div><input type="number" min="1" value="' + i.qty + '" data-idx="' + idx + '"><br><button data-rm="' + idx + '">' + T.remove + '</button></div></div>';
     }).join("");
     var total = c.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
     document.querySelector("[data-cart-total]").textContent = money(total);
@@ -64,21 +66,21 @@
   var co = document.querySelector("[data-checkout]");
   if (co) co.addEventListener("click", function () {
     var c = load(), msg = document.querySelector("[data-checkout-msg]");
-    if (!c.length) { msg.textContent = "Your cart is empty."; return; }
-    co.disabled = true; msg.textContent = "Opening secure checkout…";
+    if (!c.length) { msg.textContent = T.empty; return; }
+    co.disabled = true; msg.textContent = T.opening;
     fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: c.map(function (i) { return { slug: i.slug, size: i.size, qty: i.qty }; }) }) })
       .then(function (r) { return r.json(); })
-      .then(function (d) { if (d.url) location.href = d.url; else { msg.textContent = d.error || "Checkout is not available yet."; co.disabled = false; } })
-      .catch(function () { msg.textContent = "Checkout is not available yet. Please try again soon."; co.disabled = false; });
+      .then(function (d) { if (d.url) location.href = d.url; else { msg.textContent = T.unavailable; co.disabled = false; } })
+      .catch(function () { msg.textContent = T.unavailable; co.disabled = false; });
   });
 
   // Forms → WhatsApp
-  var WA = "15797940146";
+  var WA = T.wa;
   function openWa(text) { window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(text), "_blank", "noopener"); }
   var jf = document.querySelector("[data-join]");
   if (jf) jf.addEventListener("submit", function (e) {
     e.preventDefault();
-    openWa("Hello, I'd like to join The Gilded Order as a free member. My name is " + jf.querySelector("input").value.trim() + ".");
+    openWa(f(T.join, { name: jf.querySelector("input").value.trim() }));
   });
   var cf = document.querySelector("[data-contact]");
   if (cf) {
@@ -86,7 +88,7 @@
     cf.addEventListener("submit", function (e) {
       e.preventDefault();
       var d = Object.fromEntries(new FormData(cf));
-      openWa("Hello, I'm " + d.name + (d.subject ? ". Subject: " + d.subject : "") + "\n\n" + d.message);
+      openWa(f(T.contact, { name: d.name, subject: d.subject ? f(T.subject, { s: d.subject }) : "", message: d.message }));
     });
   }
 
@@ -123,6 +125,6 @@
     e.preventDefault();
     var v = cipher.querySelector("input").value.toUpperCase().replace(/[^A-Z]/g, "");
     var out = document.querySelector("[data-cipher-result]");
-    out.textContent = v === "GOLDISPATIENT" ? "Correct. Use code CAESAR15 for 15% off your next order." : "Not quite. Try again.";
+    out.textContent = v === atob(cipher.dataset.answer) ? T.correct : T.wrong;
   });
 })();
