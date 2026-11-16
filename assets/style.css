@@ -72,3 +72,42 @@ img.is-ph{object-fit:cover}
 @media(max-width:960px){.grid{grid-template-columns:repeat(2,1fr)}.articles,.tiers,.pillars{grid-template-columns:1fr}.product,.cart,.band-inner{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}
 .menu-btn{display:block}.main-nav{display:none;position:absolute;top:72px;left:0;right:0;flex-direction:column;background:var(--bg2);padding:1.5rem;border-bottom:1px solid var(--line)}.nav-open .main-nav{display:flex}.pillars{margin-top:0}.hero{padding:80px 0}}
 @media(max-width:520px){.grid{grid-template-columns:1fr 1fr;gap:12px}.cat-links{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}}
+
+/* ---------- WhatsApp ---------- */
+.wa-icon{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
+.topbar{background:linear-gradient(90deg,#0f3d2a,#128c4a,#0f3d2a);background-size:200% 100%;animation:slide 8s linear infinite;text-align:center;font-size:.85rem}
+.topbar a{display:block;padding:.55rem 1rem;color:#eafff2}.topbar strong{letter-spacing:.04em}
+.btn.wa{background:#25d366;border-color:#25d366;color:#06251a;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}
+.btn.wa:hover{background:#1ebe5b;color:#000}.btn.small{padding:.5rem .9rem;font-size:.72rem}.mt{margin-top:.8rem}
+.main-nav .btn.wa{color:#06251a}
+.wa-float{position:fixed;right:20px;bottom:20px;z-index:50;display:flex;align-items:center;gap:.6rem;background:#25d366;color:#06251a;padding:.8rem 1.2rem .8rem .9rem;border-radius:40px;font-weight:700;box-shadow:0 8px 30px rgba(37,211,102,.35);animation:wapulse 2.4s ease-in-out infinite}
+.wa-float .wa-icon{width:30px;height:30px}.wa-float:hover{color:#000;transform:scale(1.05)}
+.wa-panel{display:flex;align-items:center;gap:1rem;border:1px solid #25d366;padding:1.4rem 1.6rem;color:var(--text);font-size:1rem}
+.wa-panel .wa-icon{width:44px;height:44px;color:#25d366}.wa-panel strong{display:block;font-size:1.5rem;color:#25d366;font-family:var(--display);letter-spacing:.05em}
+.foot-wa{color:#25d366!important;font-weight:600}
+.tiers.single{grid-template-columns:minmax(0,520px);justify-content:center}
+@keyframes wapulse{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.55),0 8px 30px rgba(37,211,102,.3)}50%{box-shadow:0 0 0 14px rgba(37,211,102,0),0 8px 30px rgba(37,211,102,.3)}}
+@keyframes slide{to{background-position:200% 0}}
+
+/* ---------- Animations ---------- */
+.shimmer{background:linear-gradient(100deg,#ece6d8 20%,#e3c57a 40%,#fff6dc 50%,#e3c57a 60%,#ece6d8 80%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s ease-in-out infinite}
+@keyframes shine{0%{background-position:100% 0}100%{background-position:-150% 0}}
+.hero .dust{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-sigil{position:absolute;right:-60px;top:50%;width:560px;height:560px;transform:translateY(-50%);color:var(--gold);opacity:.55;pointer-events:none}
+.hero:after{display:none}
+.spin-slow{transform-origin:200px 200px;animation:spin 60s linear infinite}
+.spin-rev{transform-origin:200px 200px;animation:spin 40s linear infinite reverse}
+.pulse{transform-origin:200px 200px;animation:breathe 4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}}
+.btn.gold{background-size:200% 100%;animation:goldsheen 5s linear infinite}
+@keyframes goldsheen{0%{background-position:0 0}100%{background-position:200% 0}}
+.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.js .reveal.in{opacity:1;transform:none}
+.card:hover{box-shadow:0 12px 40px rgba(201,162,74,.18)}
+.card-img:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,236,180,.18) 50%,transparent 60%);background-size:250% 100%;background-position:150% 0;transition:background-position .9s}
+.card:hover .card-img:after{background-position:-50% 0}
+.hero-inner>*{animation:rise 1s ease both}.hero-inner>*:nth-child(2){animation-delay:.15s}.hero-inner>*:nth-child(3){animation-delay:.3s}.hero-inner>*:nth-child(4){animation-delay:.45s}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@media(max-width:960px){.hero-sigil{width:380px;height:380px;right:-140px;opacity:.3}.wa-float span{display:none}.wa-float{padding:.85rem}.main-nav .btn.wa{align-self:flex-start}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}

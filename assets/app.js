@@ -72,27 +72,49 @@
       .catch(function () { msg.textContent = "Checkout is not available yet. Please try again soon."; co.disabled = false; });
   });
 
-  // Forms → Pages Functions
-  function post(url, data, out, ok) {
-    fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
-      .then(function (r) { out.textContent = r.ok ? ok : "Something went wrong. Please email us instead."; })
-      .catch(function () { out.textContent = "Something went wrong. Please email us instead."; });
-  }
-  document.querySelectorAll("[data-waitlist]").forEach(function (f) {
-    f.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var out = f.querySelector(".fine") || f.appendChild(Object.assign(document.createElement("p"), { className: "fine" }));
-      post("/api/waitlist", { email: f.querySelector("input").value, tier: f.dataset.waitlist }, out, "You're on the list. Watch your inbox.");
-    });
+  // Forms → WhatsApp
+  var WA = "15797940146";
+  function openWa(text) { window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(text), "_blank", "noopener"); }
+  var jf = document.querySelector("[data-join]");
+  if (jf) jf.addEventListener("submit", function (e) {
+    e.preventDefault();
+    openWa("Hello, I'd like to join The Gilded Order as a free member. My name is " + jf.querySelector("input").value.trim() + ".");
   });
   var cf = document.querySelector("[data-contact]");
   if (cf) {
     var subj = new URLSearchParams(location.search).get("subject"); if (subj) cf.querySelector("[data-subject]").value = subj;
     cf.addEventListener("submit", function (e) {
       e.preventDefault();
-      post("/api/contact", Object.fromEntries(new FormData(cf)), cf.querySelector("[data-contact-msg]"), "Thank you. We'll reply within two business days.");
-      cf.reset();
+      var d = Object.fromEntries(new FormData(cf));
+      openWa("Hello, I'm " + d.name + (d.subject ? ". Subject: " + d.subject : "") + "\n\n" + d.message);
     });
+  }
+
+  // Scroll reveal
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var items = document.querySelectorAll(".reveal");
+  if (reduce || !("IntersectionObserver" in window)) items.forEach(function (el) { el.classList.add("in"); });
+  else {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }); }, { threshold: .12 });
+    items.forEach(function (el, i) { el.style.transitionDelay = (i % 4) * 90 + "ms"; io.observe(el); });
+  }
+
+  // Gold dust in the hero
+  var cv = document.querySelector("[data-dust]");
+  if (cv && !reduce) {
+    var ctx = cv.getContext("2d"), P = [], W, H;
+    function size() { W = cv.width = cv.offsetWidth; H = cv.height = cv.offsetHeight; }
+    size(); addEventListener("resize", size);
+    for (var k = 0; k < 70; k++) P.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.8 + .4, s: Math.random() * .0006 + .0002, a: Math.random() * Math.PI * 2 });
+    (function tick() {
+      ctx.clearRect(0, 0, W, H);
+      P.forEach(function (p) {
+        p.y -= p.s; p.a += .02; if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
+        ctx.beginPath(); ctx.arc(p.x * W + Math.sin(p.a) * 8, p.y * H, p.r, 0, 7);
+        ctx.fillStyle = "rgba(227,197,122," + (.35 + Math.sin(p.a) * .3) + ")"; ctx.fill();
+      });
+      requestAnimationFrame(tick);
+    })();
   }
 
   // Cipher

@@ -5,7 +5,8 @@ module.exports = {
   // Leave empty until the photos are uploaded; product pages show marked placeholders until then.
   imageBase: "https://media.thegildedorder.com",
   imagesPerProduct: 2,
-  email: "hello@thegildedorder.com",          // TODO: real contact email
+  whatsapp: "15797940146",                // WhatsApp number, digits only (country code first)
+  whatsappDisplay: "+1 579 794 0146",
   legalName: "[Your registered company name]", // TODO
   address: "[Registered business address]",     // TODO
   currency: "USD",

@@ -65,15 +65,7 @@ exports.articles = [
 
 exports.tiers = [
   {
-    name: "Initiate", price: "Free", period: "", key: "initiate",
-    perks: ["Monthly Gilded Letter by email", "Access to free Archive articles", "Monthly cipher puzzle", "First word on new collections"]
-  },
-  {
-    name: "Member", price: "$9", period: "/ month", key: "member", featured: true,
-    perks: ["Everything in Initiate", "10% off every shop order", "Members-only Archive stories", "Early access to limited drops", "Members' forum and monthly online meet-up"]
-  },
-  {
-    name: "Patron", price: "$29", period: "/ month", key: "patron",
-    perks: ["Everything in Member", "15% off every shop order", "A Gilded Order enamel pin each quarter", "Quarterly live salon with guest speakers", "Your name on the Patron Roll"]
+    name: "Member", price: "Free", period: "forever", key: "member", featured: true,
+    perks: ["Updates on new pieces and limited drops by WhatsApp", "Full access to every Archive story", "Monthly cipher puzzle with a shop prize", "First word on events and meet-ups", "Leave any time, no cost, ever"]
   }
 ];
