@@ -163,7 +163,7 @@ write("cart", layout({ title: "Cart", active: "", body: `
 <section class="wrap section cart">
   <div data-cart-items class="cart-items"></div>
   <aside class="cart-summary"><div class="row"><span>Subtotal</span><strong data-cart-total>$0.00</strong></div>
-  <p class="fine">Shipping and any member discount are applied at checkout.</p>
+  <p class="fine">Shipping is added at checkout.</p>
   <button class="btn gold full" data-checkout>Checkout</button><p class="fine" data-checkout-msg></p></aside>
 </section>` }));
 write("thank-you", layout({ title: "Thank you", body: `<section class="page-head center"><div class="wrap"><h1>Thank you</h1><p class="lead">Your order is confirmed. A receipt is on its way to your inbox.</p><a class="btn gold" href="/shop/">Keep exploring</a></div></section>` }));
@@ -218,7 +218,7 @@ write("about", layout({ title: "About", active: "about", body: `
 <p>People have carved meaning into rings, amulets and stone for thousands of years. An eye that watches, a serpent that renews itself, the tools of a builder. These symbols outlived the empires that made them.</p>
 <p>We started The Gilded Order to bring those symbols together in one honest place: a shop of carefully chosen pieces, a club for people who enjoy the history, and an archive that tells the real stories rather than the myths.</p>
 <h2>What we are, and aren't</h2>
-<p>We are a US-based business that sells jewellery and objects, and runs a free membership with clearly listed perks. We are not a secret society, we do not recruit anyone through private messages, and we are not connected with Freemasonry or any fraternal order.</p>
+<p>We are a US-based business that sells jewellery and objects, and runs a free membership with clearly listed perks. We are not a secret society, we never contact people first to recruit them, and we are not connected with Freemasonry or any fraternal order.</p>
 <p>Our pieces come from established makers and wholesalers. Product names and descriptions on this site are our own.</p></section>` }));
 write("contact", layout({ title: "Contact", body: `
 <section class="page-head"><div class="wrap"><h1>Contact us</h1><p class="lead">Questions about an order, a custom ring or membership? Message us on WhatsApp. We usually reply the same day.</p></div></section>
