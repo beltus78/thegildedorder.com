@@ -218,7 +218,7 @@ write("about", layout({ title: "About", active: "about", body: `
 <p>People have carved meaning into rings, amulets and stone for thousands of years. An eye that watches, a serpent that renews itself, the tools of a builder. These symbols outlived the empires that made them.</p>
 <p>We started The Gilded Order to bring those symbols together in one honest place: a shop of carefully chosen pieces, a club for people who enjoy the history, and an archive that tells the real stories rather than the myths.</p>
 <h2>What we are, and aren't</h2>
-<p>We are a registered business that sells jewellery and objects, and runs a paid membership with clearly listed perks. We are not a secret society, we do not recruit anyone through private messages, and we are not connected with Freemasonry or any fraternal order.</p>
+<p>We are a US-based business that sells jewellery and objects, and runs a paid membership with clearly listed perks. We are not a secret society, we do not recruit anyone through private messages, and we are not connected with Freemasonry or any fraternal order.</p>
 <p>Our pieces come from established makers and wholesalers. Product names and descriptions on this site are our own.</p></section>` }));
 write("contact", layout({ title: "Contact", body: `
 <section class="page-head"><div class="wrap"><h1>Contact us</h1><p class="lead">Questions about an order, a custom ring or membership? Message us on WhatsApp. We usually reply the same day.</p></div></section>
@@ -232,11 +232,11 @@ write("contact", layout({ title: "Contact", body: `
 // ---------- LEGAL (templates — have them reviewed before launch) ----------
 const legal = {
   terms: ["Terms of Service", [
-    `These terms apply to your use of this website and to purchases from ${cfg.legalName} ("we", "us"), trading as The Gilded Order.`,
+    `These terms apply to your use of this website and to purchases from ${cfg.legalName} ("we", "us"), based in the ${cfg.address}.`,
     "Prices are shown in US dollars and include any discounts shown at the time of order. We may correct pricing errors before an order ships.",
     "Product photos show the item as accurately as we can; small differences in colour or finish can occur with handmade and cast pieces.",
     "Nothing on this website promises financial gain, fame, protection, immigration benefits or any outcome beyond the goods and membership perks described.",
-    "These terms are governed by the laws of the place where we are registered. Contact us with any question before taking other action."]],
+    "These terms are governed by the laws of the United States. Contact us with any question before taking other action."]],
   privacy: ["Privacy Policy", [
     "We collect the details you give us (name, WhatsApp number, shipping address) to process orders, run memberships and answer messages.",
     "Payments are handled by our payment provider; we never see or store your full card number.",

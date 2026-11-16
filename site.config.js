@@ -7,8 +7,8 @@ module.exports = {
   imagesPerProduct: 2,
   whatsapp: "15797940146",                // WhatsApp number, digits only (country code first)
   whatsappDisplay: "+1 579 794 0146",
-  legalName: "[Your registered company name]", // TODO
-  address: "[Registered business address]",     // TODO
+  legalName: "The Gilded Order",
+  address: "United States",
   currency: "USD",
   siteUrl: "https://thegildedorder.com"
 };
