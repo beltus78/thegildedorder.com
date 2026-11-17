@@ -113,10 +113,8 @@ img.is-ph{object-fit:cover}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
 /* ---------- Language dropdown ---------- */
-.flag{width:18px;height:12px;border-radius:2px;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
 .lang-dd{position:relative}
 .lang-dd summary{list-style:none;display:flex;align-items:center;gap:.35rem;cursor:pointer;padding:.3rem .2rem;font-size:.72rem;letter-spacing:.06em;color:var(--muted);user-select:none}
-.lang-dd summary span{display:none}
 .lang-dd summary::-webkit-details-marker{display:none}
 .lang-dd summary:hover,.lang-dd[open] summary{color:var(--gold2)}
 .caret{width:5px;height:5px;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:rotate(45deg) translateY(-2px);transition:transform .2s}
