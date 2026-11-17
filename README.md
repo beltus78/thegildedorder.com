@@ -22,7 +22,10 @@ Then in the Pages project settings:
 - **KV binding GILDED_KV**: stores waitlist sign-ups and contact messages.
 - In Stripe, create the promotion code **CAESAR15** (15% off). It's the prize for the cipher puzzle.
 
-## Product photos (R2 bucket: `gilded-order-media`, already created)
+## Product photos
+Photos live in `images/products/<slug>/1.jpg, 2.jpg ...` (1000x1000 JPG). The first is the main photo. Add a folder, push, done.
+
+### Optional: serve from R2 instead (bucket `gilded-order-media`)
 1. Upload 2+ photos per product. The exact file names are in `image-manifest.csv`, e.g. `products/sterling-square-and-compass-signet/1.jpg`.
    ```
    npx wrangler r2 object put gilded-order-media/products/<slug>/1.jpg --file ./photo.jpg

@@ -8,7 +8,7 @@ module.exports = [
   { name: "Square & Compass Band, 10mm", cat: "rings", price: 24.99, priceToConfirm: true, supplier: "West Coast Jewelry", link: "https://www.faire.com/product/p_933d1the",
     desc: "A flat 10mm stainless steel band with the square and compass set into the face. Just 7 grams on the hand." },
   { name: "Blazing Star Steel Ring", cat: "rings", price: 18.65, supplier: "Mio Queena", link: "https://www.faire.com/product/p_swb7pq2xyx",
-    desc: "A statement ring in polished stainless steel, crowned with a raised star emblem." },
+    desc: "A gold-tone steel ring set with a five-pointed star in coloured enamel and ringed with sparkling crystals." },
   { name: "Black Shield Two-Tone Ring", cat: "rings", price: 15, supplier: "West Coast Jewelry", link: "https://www.faire.com/product/p_60ejypze",
     desc: "A black enamel shield framed in steel, with a polished silver square and compass at its centre." },
   { name: "Bronze Emblem Ring", cat: "rings", price: 12.5, supplier: "Faire supplier", link: "https://www.faire.com/product/p_52cjr79kfz",

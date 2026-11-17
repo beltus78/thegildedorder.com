@@ -25,7 +25,9 @@ const WA_ICON = `<svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true"><pa
 const LOGO = `<svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="23" fill="none" stroke="currentColor" stroke-width="1" opacity=".6"/><path d="M32 12 L49 42 L15 42 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M32 22 L40.5 37 L23.5 37 Z" fill="currentColor" opacity=".9"/><circle cx="32" cy="50" r="2" fill="currentColor"/></svg>`;
 const SIGIL = `<svg class="hero-sigil" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="currentColor"><circle cx="200" cy="200" r="190" stroke-width="1" opacity=".35"/><g class="spin-slow"><circle cx="200" cy="200" r="160" stroke-width="1.5" stroke-dasharray="2 10"/><path d="M200 40 L200 60 M200 340 L200 360 M40 200 L60 200 M340 200 L360 200" stroke-width="2"/></g><g class="spin-rev"><circle cx="200" cy="200" r="128" stroke-width="1"/><path d="M200 72 L311 264 L89 264 Z" stroke-width="1.5"/><path d="M200 328 L89 136 L311 136 Z" stroke-width="1" opacity=".5"/></g><circle class="pulse" cx="200" cy="200" r="34" stroke-width="2"/><path d="M200 168 L228 216 L172 216 Z" fill="currentColor" opacity=".8"/></g></svg>`;
 
-const imgUrl = (p, n) => `${cfg.imageBase.replace(/\/$/, "")}/products/${p.slug}/${n}.jpg`;
+const IMG_DIR = path.join(__dirname, "images", "products");
+const imgCount = p => { try { return fs.readdirSync(path.join(IMG_DIR, p.slug)).filter(f => /^\d+\.jpg$/.test(f)).length; } catch { return 0; } };
+const imgUrl = (p, n) => `${imgCount(p) >= n ? "" : cfg.imageBase.replace(/\/$/, "")}/products/${p.slug}/${n}.jpg`;
 const caesar = s => s.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0) - 65 + 3) % 26 + 65));
 const placeholderFile = lang => lang === "en" ? "/assets/placeholder.svg" : `/assets/placeholder-${lang}.svg`;
 
@@ -140,7 +142,7 @@ for (const lang of LANGS) {
 
   // ---------- PRODUCT PAGES ----------
   for (const p of products) {
-    const thumbs = Array.from({ length: cfg.imagesPerProduct }, (_, i) => i + 1);
+    const thumbs = Array.from({ length: Math.max(imgCount(p), cfg.imagesPerProduct) }, (_, i) => i + 1);
     const related = products.filter(x => x.cat === p.cat && x.slug !== p.slug).slice(0, 4);
     const priceText = (p.priceFrom ? T.from : "") + money(p.price);
     const ld = { "@context": "https://schema.org", "@type": "Product", name: p.name, description: p.desc, image: thumbs.map(n => imgUrl(p, n)),
@@ -242,6 +244,7 @@ ${a.body.map(p => `<p>${esc(p)}</p>`).join("")}
 }
 
 // ---------- ASSETS ----------
+if (fs.existsSync(IMG_DIR)) fs.cpSync(IMG_DIR, path.join(OUT, "products"), { recursive: true });
 fs.mkdirSync(path.join(OUT, "assets"), { recursive: true });
 for (const f of fs.readdirSync(path.join(__dirname, "assets"))) fs.copyFileSync(path.join(__dirname, "assets", f), path.join(OUT, "assets", f));
 for (const lang of ["fr", "pt"]) fs.writeFileSync(path.join(OUT, placeholderFile(lang)), placeholderSvg(I18N[lang].ph));
@@ -254,7 +257,7 @@ fs.writeFileSync(path.join(__dirname, "functions", "_catalog.js"),
 
 // Image manifest: where each photo must be uploaded in R2
 fs.writeFileSync(path.join(__dirname, "image-manifest.csv"),
-  "product,supplier_page,r2_key_1,r2_key_2\n" + baseProducts.map(p => `"${p.name}",${p.link},products/${p.slug}/1.jpg,products/${p.slug}/2.jpg`).join("\n") + "\n");
+  "product,photos,folder\n" + baseProducts.map(p => `"${p.name}",${imgCount(p)},images/products/${p.slug}/`).join("\n") + "\n");
 
 fs.writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${cfg.siteUrl}/sitemap.txt\n`);
 fs.writeFileSync(path.join(OUT, "sitemap.txt"), sitemap.filter(u => !u.includes("cart") && !u.includes("thank-you")).join("\n") + "\n");

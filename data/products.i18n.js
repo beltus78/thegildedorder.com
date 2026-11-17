@@ -7,8 +7,8 @@ module.exports = {
     fr: ["Anneau équerre et compas, 10 mm", "Un anneau plat de 10 mm en acier inoxydable, équerre et compas incrustés sur le dessus. Seulement 7 grammes au doigt."],
     pt: ["Aliança esquadro e compasso, 10 mm", "Uma aliança reta de 10 mm em aço inoxidável com esquadro e compasso na face. Apenas 7 gramas no dedo."] },
   "blazing-star-steel-ring": {
-    fr: ["Bague acier étoile flamboyante", "Une bague de caractère en acier poli, couronnée d’une étoile en relief."],
-    pt: ["Anel de aço estrela flamejante", "Um anel marcante em aço polido, coroado por uma estrela em relevo."] },
+    fr: ["Bague acier étoile flamboyante", "Une bague en acier doré ornée d’une étoile à cinq branches en émail coloré, entourée de cristaux étincelants."],
+    pt: ["Anel de aço estrela flamejante", "Um anel de aço dourado com uma estrela de cinco pontas em esmalte colorido, cercada de cristais brilhantes."] },
   "black-shield-two-tone-ring": {
     fr: ["Bague bicolore bouclier noir", "Un bouclier en émail noir serti d’acier, avec en son centre une équerre et un compas en argent poli."],
     pt: ["Anel bicolor escudo negro", "Um escudo de esmalte preto emoldurado em aço, com esquadro e compasso prateados e polidos no centro."] },
