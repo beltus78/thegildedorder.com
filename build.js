@@ -27,6 +27,11 @@ const SIGIL = `<svg class="hero-sigil" viewBox="0 0 400 400" aria-hidden="true">
 
 const IMG_DIR = path.join(__dirname, "images", "products");
 const imgCount = p => { try { return fs.readdirSync(path.join(IMG_DIR, p.slug)).filter(f => /^\d+\.jpg$/.test(f)).length; } catch { return 0; } };
+const FLAGS = {
+  en: `<svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#b22234"/><g fill="#fff">${[1,3,5,7,9,11].map(i => `<rect y="${i*20/13}" width="30" height="${20/13}"/>`).join("")}</g><rect width="13" height="${7*20/13}" fill="#3c3b6e"/><g fill="#fff">${[[2,2],[5,2],[8,2],[11,2],[3.5,4.5],[6.5,4.5],[9.5,4.5],[2,7],[5,7],[8,7],[11,7],[3.5,9.5],[6.5,9.5],[9.5,9.5]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r=".6"/>`).join("")}</g></svg>`,
+  fr: `<svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="10" height="20" fill="#002395"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ed2939"/></svg>`,
+  pt: `<svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#009c3b"/><path d="M15 2.5 L27 10 L15 17.5 L3 10 Z" fill="#ffdf00"/><circle cx="15" cy="10" r="4.6" fill="#002776"/><path d="M10.6 9.2 Q15 8 19.4 11" stroke="#fff" stroke-width=".9" fill="none"/></svg>`
+};
 const imgUrl = (p, n) => `${imgCount(p) >= n ? "" : cfg.imageBase.replace(/\/$/, "")}/products/${p.slug}/${n}.jpg`;
 const caesar = s => s.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0) - 65 + 3) % 26 + 65));
 const placeholderFile = lang => lang === "en" ? "/assets/placeholder.svg" : `/assets/placeholder-${lang}.svg`;
@@ -63,7 +68,7 @@ for (const lang of LANGS) {
       .map(([h, t, k]) => `<a href="${L(h)}" class="${active === k ? "active" : ""}">${t}</a>`).join("");
     const pagePath = rel.endsWith(".html") ? "/" : "/" + (rel ? rel + "/" : "");
     const href = lg => (lg === "en" ? "" : "/" + lg) + pagePath;
-    const switcher = `<span class="lang">${LANGS.map(lg => lg === lang ? `<b>${I18N[lg].short}</b>` : `<a href="${href(lg)}" hreflang="${I18N[lg].htmlLang}" lang="${I18N[lg].htmlLang}" title="${I18N[lg].label}">${I18N[lg].short}</a>`).join("")}</span>`;
+    const switcher = `<details class="lang-dd" data-lang-dd><summary aria-label="Language">${FLAGS[lang]}<span>${I18N[lang].short}</span><i class="caret"></i></summary><div class="lang-menu">${LANGS.map(lg => `<a href="${href(lg)}" hreflang="${I18N[lg].htmlLang}" lang="${I18N[lg].htmlLang}" class="${lg === lang ? "cur" : ""}">${FLAGS[lg]}<span>${I18N[lg].label}</span>${lg === lang ? "<b>✓</b>" : ""}</a>`).join("")}</div></details>`;
     const alt = LANGS.map(lg => `<link rel="alternate" hreflang="${I18N[lg].htmlLang}" href="${cfg.siteUrl}${href(lg)}">`).join("") + `<link rel="alternate" hreflang="x-default" href="${cfg.siteUrl}${pagePath}">`;
     return `<!DOCTYPE html>
 <html lang="${T.htmlLang}"><head>
@@ -91,7 +96,7 @@ for (const lang of LANGS) {
     <p class="fine">${esc(T.footerDisclaimer)}</p></div>
   <div><h4>${T.footShop}</h4>${CAT_KEYS.map(k => `<a href="${L(`/shop/${k}/`)}">${esc(CATS[k].name)}</a>`).join("")}</div>
   <div><h4>${T.footOrder}</h4><a href="${wa(T.waHello)}" target="_blank" rel="noopener" class="foot-wa">WhatsApp ${cfg.whatsappDisplay}</a><a href="${L("/membership/")}">${T.nav.membership}</a><a href="${L("/archive/")}">${T.nav.archive}</a><a href="${L("/archive/cipher/")}">${T.cipherOfMonth}</a><a href="${L("/about/")}">${T.nav.about}</a><a href="${L("/contact/")}">${T.nav.contact}</a></div>
-  <div><h4>${T.footPolicies}</h4>${Object.entries(T.legal).map(([k, [t]]) => `<a href="${L(`/legal/${k}/`)}">${esc(t)}</a>`).join("")}<div class="foot-lang">${LANGS.map(lg => `<a href="${href(lg)}" lang="${I18N[lg].htmlLang}">${I18N[lg].label}</a>`).join(" · ")}</div></div>
+  <div><h4>${T.footPolicies}</h4>${Object.entries(T.legal).map(([k, [t]]) => `<a href="${L(`/legal/${k}/`)}">${esc(t)}</a>`).join("")}<div class="foot-lang">${LANGS.map(lg => `<a href="${href(lg)}" lang="${I18N[lg].htmlLang}">${FLAGS[lg]} ${I18N[lg].label}</a>`).join("")}</div></div>
 </div><div class="wrap fine bottom">© ${new Date().getFullYear()} ${esc(cfg.legalName)} · ${esc(cfg.address)}</div></footer>
 <a class="wa-float" href="${wa(T.waHello)}" target="_blank" rel="noopener" aria-label="${T.chatOnWa}">${WA_ICON}<span>${T.chatWithUs}</span></a>
 <script src="/assets/app.js"></script>

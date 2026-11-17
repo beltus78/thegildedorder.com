@@ -92,6 +92,13 @@
     });
   }
 
+  // Language dropdown: close on outside click or Escape
+  var dd = document.querySelector("[data-lang-dd]");
+  if (dd) {
+    document.addEventListener("click", function (e) { if (dd.open && !dd.contains(e.target)) dd.open = false; });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") dd.open = false; });
+  }
+
   // Scroll reveal
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var items = document.querySelectorAll(".reveal");

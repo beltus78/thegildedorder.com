@@ -111,5 +111,18 @@ img.is-ph{object-fit:cover}
 @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @media(max-width:960px){.hero-sigil{width:380px;height:380px;right:-140px;opacity:.3}.wa-float span{display:none}.wa-float{padding:.85rem}.main-nav .btn.wa{align-self:flex-start}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
-.lang{display:inline-flex;gap:.15rem;border:1px solid var(--line);padding:.15rem}.lang a,.lang b{font-size:.72rem;letter-spacing:.08em;padding:.2rem .45rem;color:var(--muted)}.lang b{background:var(--gold);color:#000}.lang a:hover{color:var(--gold2)}
-.foot-lang{margin-top:1rem;font-size:.85rem;color:var(--muted)}.foot-lang a{display:inline!important}
+
+/* ---------- Language dropdown ---------- */
+.flag{width:22px;height:15px;border-radius:2px;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+.lang-dd{position:relative}
+.lang-dd summary{list-style:none;display:flex;align-items:center;gap:.45rem;cursor:pointer;border:1px solid var(--line);padding:.42rem .65rem;font-size:.8rem;letter-spacing:.06em;color:var(--text);user-select:none}
+.lang-dd summary::-webkit-details-marker{display:none}
+.lang-dd summary:hover,.lang-dd[open] summary{border-color:var(--gold)}
+.caret{width:7px;height:7px;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.lang-dd[open] .caret{transform:rotate(225deg) translateY(-1px)}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:190px;background:var(--panel);border:1px solid var(--gold);box-shadow:0 14px 40px rgba(0,0,0,.5);padding:6px;z-index:40;animation:rise .18s ease both}
+.lang-menu a{display:flex!important;align-items:center;gap:.7rem;padding:.6rem .7rem;color:var(--text);font-size:.92rem}
+.lang-menu a:hover{background:rgba(201,162,74,.12);color:var(--gold2)}
+.lang-menu a.cur{color:var(--gold2)}.lang-menu b{margin-left:auto;color:var(--gold)}
+.foot-lang{margin-top:1.2rem;display:flex;flex-direction:column;gap:.2rem}.foot-lang a{display:flex!important;align-items:center;gap:.55rem}
+@media(max-width:960px){.lang-dd{align-self:center}.lang-menu{left:50%;right:auto;transform:translateX(-50%);animation:none}}
