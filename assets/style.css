@@ -125,3 +125,19 @@ img.is-ph{object-fit:cover}
 .lang-menu a.cur{color:var(--gold2)}.lang-menu b{margin-left:auto;color:var(--gold);font-size:.7rem}
 .foot-lang{margin-top:1rem;display:flex;gap:.9rem}.foot-lang a{display:flex!important;align-items:center;gap:.35rem;font-size:.8rem!important}
 @media(max-width:960px){.lang-dd{align-self:center}.lang-menu{left:50%;right:auto;transform:translateX(-50%)}}
+
+/* ---------- Conversion sections ---------- */
+.how h2{text-align:center}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:2rem 0}
+.step{border:1px solid var(--line);background:var(--panel);padding:1.8rem;position:relative}
+.step .num{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);color:var(--gold2);font-family:var(--display);margin-bottom:.8rem}
+.step p{color:var(--muted);margin:0}.actions.center{justify-content:center}
+.join-band{background:linear-gradient(120deg,#1d170c,#2a2111 50%,#1d170c);border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);padding:46px 0}
+.join-inner{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center}.join-inner p{color:var(--muted);margin:0}
+.join.inline{display:flex;flex-wrap:wrap;gap:10px}.join.inline input{margin:0;flex:1 1 200px}.join.inline .btn{flex:1 1 auto}
+.africa{text-align:center;border-top:1px solid var(--line)}.africa p{max-width:720px;margin:0 auto 1.4rem;color:var(--muted)}
+.country-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:1.6rem}
+.country-chips a{border:1px solid var(--line);padding:.45rem 1rem;color:var(--text);font-size:.9rem}.country-chips a:hover{border-color:var(--gold);color:var(--gold2)}
+.help-line{font-size:.9rem;color:var(--muted);margin:.9rem 0 .3rem}.join-nudge{font-size:.9rem;color:var(--gold2);margin:0}
+.foot-countries{margin-top:1rem;font-size:.8rem;color:var(--muted);line-height:1.8}.foot-countries a{display:inline!important;font-size:.8rem!important}
+.country-head .lead{margin-bottom:.8rem}.country-head .actions{margin:1.6rem 0 1rem}
+@media(max-width:960px){.steps,.join-inner{grid-template-columns:1fr}.join.inline{flex-direction:column}}

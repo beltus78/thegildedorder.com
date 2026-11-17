@@ -77,10 +77,11 @@
   // Forms → WhatsApp
   var WA = T.wa;
   function openWa(text) { window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(text), "_blank", "noopener"); }
-  var jf = document.querySelector("[data-join]");
-  if (jf) jf.addEventListener("submit", function (e) {
-    e.preventDefault();
-    openWa(f(T.join, { name: jf.querySelector("input").value.trim() }));
+  document.querySelectorAll("[data-join]").forEach(function (jf) {
+    jf.addEventListener("submit", function (e) {
+      e.preventDefault();
+      openWa(f(T.join, { name: jf.querySelector("input").value.trim() }));
+    });
   });
   var cf = document.querySelector("[data-contact]");
   if (cf) {

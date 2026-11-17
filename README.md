@@ -45,3 +45,6 @@ Only upload photos you have the rights to use (as a Faire retailer for that bran
 > Subject: Product photos for [product name]
 >
 > Hello [supplier], I run The Gilded Order, an online shop, and I'm stocking your [product name]. Could you send your product image pack, and confirm we may use the photos on our website and social media to sell your products? Thank you, Beltus
+
+## Country pages (SEO)
+`data/countries.js` holds one landing page per target country (South Africa, Kenya, Cameroon EN/FR, DR Congo, Mali, Chad, Côte d'Ivoire, Senegal). Add a country by copying an entry. Share images: `python3 tools_og.py` rebuilds `assets/og-*.jpg`.

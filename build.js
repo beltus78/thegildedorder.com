@@ -8,6 +8,7 @@ const { articles: baseArticles } = require("./data/content");
 const I18N = require("./data/i18n");
 const PT = require("./data/products.i18n");
 const AT = require("./data/articles.i18n");
+const COUNTRIES = require("./data/countries");
 
 const OUT = path.join(__dirname, "dist");
 const LANGS = ["en", "fr", "pt"];
@@ -55,16 +56,24 @@ for (const lang of LANGS) {
   const PH = placeholderFile(lang);
   const img = (p, n, cls = "") =>
     `<img class="${cls}" src="${imgUrl(p, n)}" alt="${esc(p.name)} – ${T.photo} ${n}" loading="lazy" onerror="this.onerror=null;this.src='${PH}';this.classList.add('is-ph')">`;
-  const W = (rel, opts) => { write((pre ? lang + "/" : "") + rel, layout({ ...opts, rel })); if (!rel.endsWith(".html")) sitemap.push(cfg.siteUrl + L("/" + (rel ? rel + "/" : ""))); };
+  const W = (rel, opts) => {
+    write((pre ? lang + "/" : "") + rel, layout({ ...opts, rel }));
+    if (rel.endsWith(".html") || rel === "cart" || rel === "thank-you") return;
+    const pp = "/" + (rel ? rel + "/" : "");
+    const alts = opts.alts || Object.fromEntries(LANGS.map(lg => [lg, (lg === "en" ? "" : "/" + lg) + pp]));
+    sitemap.push({ url: cfg.siteUrl + L(pp), alts });
+  };
   const jsStrings = { ...T.js, shop: L("/shop/"), placeholder: PH, wa: cfg.whatsapp };
 
-  function layout({ title, desc, body, active = "", rel }) {
+  function layout({ title, desc, body, active = "", rel, alts, ld, fullTitle }) {
     const nav = [["/shop/", T.nav.shop, "shop"], ["/membership/", T.nav.membership, "membership"], ["/archive/", T.nav.archive, "archive"], ["/about/", T.nav.about, "about"]]
       .map(([h, t, k]) => `<a href="${L(h)}" class="${active === k ? "active" : ""}">${t}</a>`).join("");
     const pagePath = rel.endsWith(".html") ? "/" : "/" + (rel ? rel + "/" : "");
-    const href = lg => (lg === "en" ? "" : "/" + lg) + pagePath;
+    const href = lg => alts ? (alts[lg] || (lg === "en" ? "/" : "/" + lg + "/")) : (lg === "en" ? "" : "/" + lg) + pagePath;
+    const selfUrl = cfg.siteUrl + (alts ? alts[lang] : href(lang));
     const switcher = `<details class="lang-dd" data-lang-dd><summary aria-label="Language"><span>${I18N[lang].short}</span><i class="caret"></i></summary><div class="lang-menu">${LANGS.map(lg => `<a href="${href(lg)}" hreflang="${I18N[lg].htmlLang}" lang="${I18N[lg].htmlLang}" class="${lg === lang ? "cur" : ""}"><span>${I18N[lg].label}</span>${lg === lang ? "<b>✓</b>" : ""}</a>`).join("")}</div></details>`;
-    const alt = LANGS.map(lg => `<link rel="alternate" hreflang="${I18N[lg].htmlLang}" href="${cfg.siteUrl}${href(lg)}">`).join("") + `<link rel="alternate" hreflang="x-default" href="${cfg.siteUrl}${pagePath}">`;
+    const altLangs = alts ? Object.keys(alts) : LANGS;
+    const alt = altLangs.map(lg => `<link rel="alternate" hreflang="${I18N[lg].htmlLang}" href="${cfg.siteUrl}${href(lg)}">`).join("") + (alts ? "" : `<link rel="alternate" hreflang="x-default" href="${cfg.siteUrl}${pagePath}">`);
     return `<!DOCTYPE html>
 <html lang="${T.htmlLang}"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -77,10 +86,14 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
 
   gtag('config', '${cfg.googleAdsId}');
 </script>` : ""}
-<title>${esc(title ? title + " | " + cfg.name : cfg.name + " — " + T.tagline)}</title>
+<title>${esc(fullTitle || (title ? title + " | " + cfg.name : cfg.name + " — " + T.tagline))}</title>
 <meta name="description" content="${esc(desc || T.tagline)}">
-<meta property="og:title" content="${esc(title || cfg.name)}"><meta property="og:description" content="${esc(desc || T.tagline)}">
-<link rel="canonical" href="${cfg.siteUrl}${href(lang)}">${alt}
+<meta property="og:type" content="website"><meta property="og:site_name" content="${cfg.name}"><meta property="og:url" content="${selfUrl}">
+<meta property="og:title" content="${esc(fullTitle || title || cfg.name)}"><meta property="og:description" content="${esc(desc || T.tagline)}">
+<meta property="og:image" content="${cfg.siteUrl}/assets/og-${lang}.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="${T.htmlLang.replace("-", "_")}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${cfg.siteUrl}/assets/og-${lang}.jpg">
+<link rel="canonical" href="${selfUrl}">${alt}
+${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ""}
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -100,7 +113,7 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
     <p class="fine">${esc(T.footerDisclaimer)}</p></div>
   <div><h4>${T.footShop}</h4>${CAT_KEYS.map(k => `<a href="${L(`/shop/${k}/`)}">${esc(CATS[k].name)}</a>`).join("")}</div>
   <div><h4>${T.footOrder}</h4><a href="${wa(T.waHello)}" target="_blank" rel="noopener" class="foot-wa">WhatsApp ${cfg.whatsappDisplay}</a><a href="${L("/membership/")}">${T.nav.membership}</a><a href="${L("/archive/")}">${T.nav.archive}</a><a href="${L("/archive/cipher/")}">${T.cipherOfMonth}</a><a href="${L("/about/")}">${T.nav.about}</a><a href="${L("/contact/")}">${T.nav.contact}</a></div>
-  <div><h4>${T.footPolicies}</h4>${Object.entries(T.legal).map(([k, [t]]) => `<a href="${L(`/legal/${k}/`)}">${esc(t)}</a>`).join("")}<div class="foot-lang">${LANGS.map(lg => `<a href="${href(lg)}" lang="${I18N[lg].htmlLang}">${I18N[lg].label}</a>`).join("")}</div></div>
+  <div><h4>${T.footPolicies}</h4>${Object.entries(T.legal).map(([k, [t]]) => `<a href="${L(`/legal/${k}/`)}">${esc(t)}</a>`).join("")}<div class="foot-countries"><span>${T.weServe}</span> ${COUNTRIES.map(c => `<a href="${c.lang === "en" ? "" : "/" + c.lang}/${c.slug}/" lang="${I18N[c.lang].htmlLang}">${c.country}${c.slug === "cameroon" ? " (EN)" : c.slug === "cameroun" ? " (FR)" : ""}</a>`).join(", ")}</div><div class="foot-lang">${LANGS.map(lg => `<a href="${href(lg)}" lang="${I18N[lg].htmlLang}">${I18N[lg].label}</a>`).join("")}</div></div>
 </div><div class="wrap fine bottom">© ${new Date().getFullYear()} ${esc(cfg.legalName)} · ${esc(cfg.address)}</div></footer>
 <a class="wa-float" href="${wa(T.waHello)}" target="_blank" rel="noopener" aria-label="${T.chatOnWa}">${WA_ICON}<span>${T.chatWithUs}</span></a>
 <script src="/assets/app.js"></script>
@@ -112,10 +125,17 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
   <div class="card-body"><span class="cat">${esc(CATS[p.cat].name)}</span><h3>${esc(p.name)}</h3>
   <span class="price">${p.priceFrom ? T.from : ""}${money(p.price)}</span></div></a>`;
 
+  const joinBand = `<section class="join-band reveal"><div class="wrap join-inner"><div><h2>${esc(T.joinBand[0])}</h2><p>${esc(T.joinBand[1])}</p></div>
+  <form class="join inline" data-join><input name="name" required placeholder="${esc(T.firstName)}"><button class="btn wa">${WA_ICON} ${T.joinWa}</button></form></div></section>`;
+
   // ---------- HOME ----------
   const featured = ["sterling-square-and-compass-signet", "eye-and-ouroboros-pendant", "onyx-pyramid-candle-holders", "square-and-compass-tie-chain", "copper-and-opalite-eye-necklace", "gilded-dome-ring", "sterling-witches-knot-pendant", "cathedral-hexagon-votive"]
     .map(s => products.find(p => p.slug === s)).filter(Boolean);
-  W("", { desc: T.homeDesc, body: `
+  // prefer pieces that have photos; top up with other photographed pieces
+  const withPhotos = (list, n) => { const ok = list.filter(p => imgCount(p) > 0); for (const p of products) { if (ok.length >= n) break; if (imgCount(p) > 0 && !ok.includes(p)) ok.push(p); } return ok.slice(0, n); };
+  W("", { fullTitle: T.homeTitle, desc: T.homeDesc, ld: { "@context": "https://schema.org", "@graph": [
+    { "@type": "Organization", name: cfg.name, url: cfg.siteUrl, logo: cfg.siteUrl + "/assets/favicon.svg", contactPoint: { "@type": "ContactPoint", telephone: "+" + cfg.whatsapp, contactType: "customer service", availableLanguage: ["English", "French", "Portuguese"] } },
+    { "@type": "WebSite", name: cfg.name, url: cfg.siteUrl + L("/"), inLanguage: T.htmlLang }] }, body: `
 <section class="hero"><canvas class="dust" data-dust></canvas>${SIGIL}
 <div class="wrap hero-inner">
   <p class="eyebrow">${T.est} ${new Date().getFullYear()}</p>
@@ -128,14 +148,20 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
   <a href="${L("/membership/")}" class="pillar reveal"><span class="num">II</span><h3>${T.pClub[0]}</h3><p>${esc(T.pClub[1])}</p></a>
   <a href="${L("/archive/")}" class="pillar reveal"><span class="num">III</span><h3>${T.pArchive[0]}</h3><p>${esc(T.pArchive[1])}</p></a>
 </section>
+<section class="wrap section how"><h2>${T.how[0]}</h2><div class="steps">${T.how[1].map(([h, t], i) => `<div class="step reveal"><span class="num">${i + 1}</span><h3>${esc(h)}</h3><p>${esc(t)}</p></div>`).join("")}</div>
+  <div class="actions center"><a class="btn gold" href="${L("/shop/")}">${T.exploreShop}</a><a class="btn wa" href="${wa(T.waHello)}" target="_blank" rel="noopener">${WA_ICON} ${T.chatOnWa}</a></div></section>
 <section class="wrap section"><div class="section-head"><h2>${T.featured}</h2><a href="${L("/shop/")}">${T.viewAll}</a></div>
-<div class="grid">${featured.map(card).join("")}</div></section>
+<div class="grid">${withPhotos(featured, 8).map(card).join("")}</div></section>
 <section class="band"><div class="wrap band-inner">
   <div><h2>${T.shopBySymbol}</h2><p class="muted">${esc(T.shopBySymbolText)}</p></div>
   <div class="cat-links">${CAT_KEYS.map(k => `<a href="${L(`/shop/${k}/`)}">${esc(CATS[k].name)}<span>${products.filter(p => p.cat === k).length}</span></a>`).join("")}</div>
 </div></section>
 <section class="wrap section"><div class="section-head"><h2>${T.fromArchive}</h2><a href="${L("/archive/")}">${T.allStories}</a></div>
 <div class="articles">${articles.slice(0, 3).map(a => `<a class="article-card reveal" href="${L(`/archive/${a.slug}/`)}"><h3>${esc(a.title)}</h3><p>${esc(a.teaser)}</p><span>${T.read}</span></a>`).join("")}</div></section>
+${joinBand}
+<section class="wrap section africa reveal"><h2>${T.africaH}</h2><p>${esc(T.africaP)}</p>
+  <div class="country-chips">${COUNTRIES.map(c => `<a href="${c.lang === "en" ? "" : "/" + c.lang}/${c.slug}/" lang="${I18N[c.lang].htmlLang}">${c.country}</a>`).join("")}</div>
+  <a class="btn wa" href="${wa(T.waHello)}" target="_blank" rel="noopener">${WA_ICON} ${T.chatOnWa}</a></section>
 <section class="wrap section honest"><h2>${T.honestH}</h2><p>${esc(T.honestP(cfg.whatsappDisplay))}</p></section>` });
 
   // ---------- SHOP ----------
@@ -145,18 +171,22 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
   <div class="filters"><a href="${L("/shop/")}" class="${!activeCat ? "on" : ""}">${T.all}</a>${CAT_KEYS.map(k => `<a href="${L(`/shop/${k}/`)}" class="${activeCat === k ? "on" : ""}">${esc(CATS[k].name)}</a>`).join("")}
   <select class="sort" data-sort aria-label="${T.sort}"><option value="">${T.sortFeatured}</option><option value="asc">${T.priceAsc}</option><option value="desc">${T.priceDesc}</option></select></div>
   <div class="grid" data-grid>${list.map(card).join("")}</div>
-</section>`;
-  W("shop", { title: T.nav.shop, desc: T.shopDesc, active: "shop", body: shopBody(products, T.allPieces, T.allPiecesText(products.length)) });
-  for (const k of CAT_KEYS) W(`shop/${k}`, { title: CATS[k].name, desc: CATS[k].blurb, active: "shop", body: shopBody(products.filter(p => p.cat === k), CATS[k].name, CATS[k].blurb, k) });
+</section>${joinBand}`;
+  W("shop", { title: T.shopTitle, desc: T.shopDesc, active: "shop", body: shopBody(products, T.allPieces, T.allPiecesText(products.length)) });
+  for (const k of CAT_KEYS) W(`shop/${k}`, { title: T.catTitles[k], desc: CATS[k].blurb, active: "shop", body: shopBody(products.filter(p => p.cat === k), CATS[k].name, CATS[k].blurb, k) });
 
   // ---------- PRODUCT PAGES ----------
   for (const p of products) {
     const thumbs = Array.from({ length: Math.max(imgCount(p), cfg.imagesPerProduct) }, (_, i) => i + 1);
     const related = products.filter(x => x.cat === p.cat && x.slug !== p.slug).slice(0, 4);
     const priceText = (p.priceFrom ? T.from : "") + money(p.price);
-    const ld = { "@context": "https://schema.org", "@type": "Product", name: p.name, description: p.desc, image: thumbs.map(n => imgUrl(p, n)),
+    const ld = { "@context": "https://schema.org", "@type": "Product", name: p.name, description: p.desc, image: thumbs.filter(n => n <= imgCount(p)).map(n => cfg.siteUrl + imgUrl(p, n)), url: cfg.siteUrl + L(`/shop/p/${p.slug}/`),
       brand: { "@type": "Brand", name: cfg.name }, offers: { "@type": "Offer", priceCurrency: "USD", price: p.price, availability: "https://schema.org/InStock" } };
-    W(`shop/p/${p.slug}`, { title: p.name, desc: p.desc, active: "shop", body: `
+    const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: T.nav.shop, item: cfg.siteUrl + L("/shop/") },
+      { "@type": "ListItem", position: 2, name: CATS[p.cat].name, item: cfg.siteUrl + L(`/shop/${p.cat}/`) },
+      { "@type": "ListItem", position: 3, name: p.name, item: cfg.siteUrl + L(`/shop/p/${p.slug}/`) }] };
+    W(`shop/p/${p.slug}`, { title: `${p.name} – ${CATS[p.cat].name}`, desc: `${p.desc} ${T.prodDescTail(money(p.price))}`, ld: crumbs, active: "shop", body: `
 <section class="wrap product">
   <div class="gallery">
     <div class="main-img" data-main>${img(p, 1)}</div>
@@ -172,6 +202,8 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
       `<label class="field">${T.quantity}<input type="number" min="1" value="1" data-qty></label>
        <button class="btn gold full" data-add='${esc(JSON.stringify({ slug: p.slug, name: p.name, price: p.price }))}'>${T.addToCart}</button>`}
     <a class="btn wa full mt" href="${wa(T.waInterested(p.name, priceText))}" target="_blank" rel="noopener">${WA_ICON} ${T.askOrderWa}</a>
+    <p class="help-line">${esc(T.sizeHelp)}</p>
+    <p class="join-nudge">✦ ${esc(T.joinBand[0])}. <a href="${L("/membership/")}">${T.joinFree}</a></p>
     <ul class="assurances">${T.assurances.map(a => `<li>${esc(a)}</li>`).join("")}</ul>
     ${p.prop65 ? `<p class="fine warn">${esc(T.prop65)}</p>` : ""}
   </div>
@@ -192,7 +224,7 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
   W("thank-you", { title: T.thankYou, body: `<section class="page-head center"><div class="wrap"><h1>${T.thankYou}</h1><p class="lead">${T.thankYouText}</p><a class="btn gold" href="${L("/shop/")}">${T.keepExploring}</a></div></section>` });
 
   // ---------- MEMBERSHIP ----------
-  W("membership", { title: T.mTitle, desc: T.mDesc, active: "membership", body: `
+  W("membership", { title: T.mTitle, desc: T.mDesc, ld: { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: T.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }, active: "membership", body: `
 <section class="page-head center"><div class="wrap"><p class="eyebrow">${T.mEyebrow}</p><h1 class="shimmer">${esc(T.mH1)}</h1><p class="lead">${esc(T.mLead)}</p></div></section>
 <section class="wrap section tiers single">
   <div class="tier featured reveal"><span class="badge">${T.mBadge}</span>
@@ -228,6 +260,28 @@ ${a.body.map(p => `<p>${esc(p)}</p>`).join("")}
 <form data-cipher data-answer="${Buffer.from(T.cPlain.replace(/[^A-Z]/g, "")).toString("base64")}" class="cipher-form"><input placeholder="${esc(T.answer)}" required><button class="btn gold">${T.check}</button></form>
 <p data-cipher-result class="cipher-result"></p>
 <details><summary>${T.hintQ}</summary><p>${esc(T.hintA)}</p></details></section>` });
+
+  // ---------- COUNTRY LANDING PAGES ----------
+  for (const c of COUNTRIES.filter(c => c.lang === lang)) {
+    const CT = COUNTRIES.text[lang] || COUNTRIES.text.en;
+    const fill = x => x.replace(/\{prep\}/g, c.prep).replace(/\{country\}/g, c.country);
+    const faq = CT.faq.map(([q, a]) => [fill(q), fill(a)]);
+    const pair = c.slug === "cameroon" ? { en: "/cameroon/", fr: "/fr/cameroun/" } : c.slug === "cameroun" ? { en: "/cameroon/", fr: "/fr/cameroun/" } : { [lang]: L(`/${c.slug}/`) };
+    const picks = c.featured.map(sl => products.find(p => p.slug === sl)).filter(Boolean);
+    W(c.slug, { fullTitle: `${c.title} | ${cfg.name}`, desc: c.desc, alts: pair,
+      ld: { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
+      body: `
+<section class="page-head country-head"><div class="wrap"><p class="eyebrow">${esc(c.country)}</p><h1 class="shimmer">${esc(c.h1)}</h1>
+  ${c.intro.map(t => `<p class="lead">${esc(t)}</p>`).join("")}
+  <div class="actions"><a class="btn wa" href="${wa(T.waHello + " (" + c.country + ")")}" target="_blank" rel="noopener">${WA_ICON} ${T.chatOnWa}</a><a class="btn gold" href="${L("/shop/")}">${T.exploreShop}</a><a class="btn ghost" href="${L("/membership/")}">${T.joinFree}</a></div>
+  <p class="fine">${esc(CT.cities(c.cities))}</p></div></section>
+<section class="wrap section"><div class="section-head"><h2>${CT.popular}</h2><a href="${L("/shop/")}">${CT.allShop}</a></div><div class="grid">${withPhotos(picks, 8).map(card).join("")}</div></section>
+<section class="wrap section how"><h2>${T.how[0]}</h2><div class="steps">${T.how[1].map(([h, t], i) => `<div class="step reveal"><span class="num">${i + 1}</span><h3>${esc(h)}</h3><p>${esc(t)}</p></div>`).join("")}</div></section>
+${joinBand}
+<section class="wrap section faq"><h2>${T.questions}</h2>
+${faq.map(([q, a]) => `  <details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("\n")}
+</section>` });
+  }
 
   // ---------- ABOUT / CONTACT ----------
   W("about", { title: T.abTitle, active: "about", body: `
@@ -271,11 +325,8 @@ fs.writeFileSync(path.join(__dirname, "image-manifest.csv"),
 fs.writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${cfg.siteUrl}/sitemap.xml\n`);
 {
   const today = new Date().toISOString().slice(0, 10);
-  const urls = sitemap.filter(u => !u.includes("/cart/") && !u.includes("thank-you"));
-  const enPaths = [...new Set(urls.map(u => u.replace(cfg.siteUrl, "").replace(/^\/(fr|pt)\//, "/")))];
-  const loc = (lg, p) => cfg.siteUrl + (lg === "en" ? "" : "/" + lg) + p;
-  const body = enPaths.flatMap(p => LANGS.map(lg => `  <url><loc>${loc(lg, p)}</loc><lastmod>${today}</lastmod>${LANGS.map(a => `<xhtml:link rel="alternate" hreflang="${I18N[a].htmlLang}" href="${loc(a, p)}"/>`).join("")}<xhtml:link rel="alternate" hreflang="x-default" href="${loc("en", p)}"/></url>`)).join("\n");
+  const body = sitemap.map(e => `  <url><loc>${e.url}</loc><lastmod>${today}</lastmod>${Object.entries(e.alts).map(([lg, h]) => `<xhtml:link rel="alternate" hreflang="${I18N[lg].htmlLang}" href="${cfg.siteUrl}${h}"/>`).join("")}</url>`).join("\n");
   fs.writeFileSync(path.join(OUT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${body}\n</urlset>\n`);
+  fs.writeFileSync(path.join(OUT, "sitemap.txt"), sitemap.map(e => e.url).join("\n") + "\n");
 }
-fs.writeFileSync(path.join(OUT, "sitemap.txt"), sitemap.filter(u => !u.includes("cart") && !u.includes("thank-you")).join("\n") + "\n");
 console.log(`Built ${baseProducts.length} products × ${LANGS.length} languages, ${sitemap.length} pages → dist/`);
