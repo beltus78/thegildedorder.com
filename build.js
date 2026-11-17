@@ -68,6 +68,15 @@ for (const lang of LANGS) {
     return `<!DOCTYPE html>
 <html lang="${T.htmlLang}"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${cfg.googleAdsId}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '${cfg.googleAdsId}');
+</script>` : ""}
 <title>${esc(title ? title + " | " + cfg.name : cfg.name + " — " + T.tagline)}</title>
 <meta name="description" content="${esc(desc || T.tagline)}">
 <meta property="og:title" content="${esc(title || cfg.name)}"><meta property="og:description" content="${esc(desc || T.tagline)}">

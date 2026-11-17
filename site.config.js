@@ -9,6 +9,7 @@ module.exports = {
   whatsappDisplay: "+1 579 794 0146",
   legalName: "The Gilded Order",
   address: "United States",
+  googleAdsId: "AW-18579092076",           // Google Ads tag (gtag.js)
   currency: "USD",
   siteUrl: "https://thegildedorder.com"
 };
