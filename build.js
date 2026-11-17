@@ -268,6 +268,14 @@ fs.writeFileSync(path.join(__dirname, "functions", "_catalog.js"),
 fs.writeFileSync(path.join(__dirname, "image-manifest.csv"),
   "product,photos,folder\n" + baseProducts.map(p => `"${p.name}",${imgCount(p)},images/products/${p.slug}/`).join("\n") + "\n");
 
-fs.writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${cfg.siteUrl}/sitemap.txt\n`);
+fs.writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${cfg.siteUrl}/sitemap.xml\n`);
+{
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = sitemap.filter(u => !u.includes("/cart/") && !u.includes("thank-you"));
+  const enPaths = [...new Set(urls.map(u => u.replace(cfg.siteUrl, "").replace(/^\/(fr|pt)\//, "/")))];
+  const loc = (lg, p) => cfg.siteUrl + (lg === "en" ? "" : "/" + lg) + p;
+  const body = enPaths.flatMap(p => LANGS.map(lg => `  <url><loc>${loc(lg, p)}</loc><lastmod>${today}</lastmod>${LANGS.map(a => `<xhtml:link rel="alternate" hreflang="${I18N[a].htmlLang}" href="${loc(a, p)}"/>`).join("")}<xhtml:link rel="alternate" hreflang="x-default" href="${loc("en", p)}"/></url>`)).join("\n");
+  fs.writeFileSync(path.join(OUT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${body}\n</urlset>\n`);
+}
 fs.writeFileSync(path.join(OUT, "sitemap.txt"), sitemap.filter(u => !u.includes("cart") && !u.includes("thank-you")).join("\n") + "\n");
 console.log(`Built ${baseProducts.length} products × ${LANGS.length} languages, ${sitemap.length} pages → dist/`);
