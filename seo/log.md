@@ -9,3 +9,8 @@ Content for SEO lives in data/content.js + data/articles.i18n.js (Archive articl
 - Fixed: meta descriptions clipped to 160 chars on a word boundary (many product pages were 165–190); " | The Gilded Order" suffix dropped when a title would pass 65 chars.
 - IndexNow key file written by build.js: /52447ccd075156206d1a9189cc54f7b6.txt.
 - Known, not changed: several Archive/category/legal pages have short descriptions (40–100 chars); country page titles are 72–82 chars.
+
+## 2026-11-21 — on-page audit
+- Titles: suffix dropped when the full title would pass 65 chars; titles still over 65 are cut at a word boundary.
+- Meta descriptions: under 110 chars are padded with the site tagline; over 160 clipped at a word boundary.
+- Search Console: property verified (Cloudflare DNS) and sitemap submitted.

@@ -4,6 +4,16 @@ const RATES = { US: { rate: 5.95, freeOver: 50 }, INTL: { rate: 19.95, freeOver:
 // Languages: English at /, French at /fr/, Brazilian Portuguese at /pt/.
 const fs = require("fs");
 // Meta descriptions: max 160 chars, cut at a word boundary.
+// Pad short descriptions (<110 chars) with the tagline.
+const padDesc = (d, tag) => (d.length >= 110 || d === tag ? d : d.replace(/\s*$/, "") + (/[.!?]$/.test(d) ? " " : ". ") + tag);
+// Fallback description for pages without their own (contact, legal…).
+const SITE_DESC = {
+  en: "The Gilded Order: symbol jewellery, rings, pendants and décor, a free members' club and Archive stories on the history of symbols. Questions answered on WhatsApp.",
+  fr: "The Gilded Order : bijoux à symboles, bagues, pendentifs et décoration, un club de membres gratuit et des récits sur l’histoire des symboles. Réponses sur WhatsApp.",
+  pt: "The Gilded Order: joias com símbolos, anéis, pingentes e decoração, um clube de membros gratuito e histórias sobre o significado dos símbolos. Atendimento no WhatsApp.",
+};
+// Titles over 65 chars lose the " | The Gilded Order" suffix.
+const fitTitle = t => (t.length > 65 && / \| The Gilded Order$/.test(t) ? t.replace(/ \| The Gilded Order$/, "") : t);
 const clip160 = s => (s.length <= 160 ? s : s.slice(0, 159).replace(/\s+\S*$/, "") + "…");
 const path = require("path");
 const cfg = require("./site.config");
@@ -90,8 +100,8 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
 
   gtag('config', '${cfg.googleAdsId}');
 </script>` : ""}
-<title>${esc(fullTitle || (title ? ((title + " | " + cfg.name).length > 65 ? title : title + " | " + cfg.name) : cfg.name + " — " + T.tagline))}</title>
-<meta name="description" content="${esc(clip160(desc || T.tagline))}">
+<title>${esc(fitTitle(fullTitle || (title ? ((title + " | " + cfg.name).length > 65 ? title : title + " | " + cfg.name) : cfg.name + " — " + T.tagline)))}</title>
+<meta name="description" content="${esc(clip160(desc ? padDesc(desc, T.tagline) : (title ? title + " — " : "") + SITE_DESC[lang]))}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${cfg.name}"><meta property="og:url" content="${selfUrl}">
 <meta property="og:title" content="${esc(fullTitle || title || cfg.name)}"><meta property="og:description" content="${esc(desc || T.tagline)}">
 <meta property="og:image" content="${cfg.siteUrl}/assets/og-${lang}.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="${T.htmlLang.replace("-", "_")}">
