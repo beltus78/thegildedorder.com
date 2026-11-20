@@ -15,7 +15,10 @@ export async function onRequestPost({ request, env }) {
   form.set("success_url", origin + "/thank-you/");
   form.set("cancel_url", origin + "/cart/");
   form.set("allow_promotion_codes", "true");
-  form.set("shipping_address_collection[allowed_countries][0]", "US");
+  // US + the African markets targeted by Ads/Merchant Center
+  ["US", "ZA", "KE", "CM", "CD", "ML", "TD", "CI", "SN"].forEach((c, n) =>
+    form.set(`shipping_address_collection[allowed_countries][${n}]`, c));
+  form.set("phone_number_collection[enabled]", "true");
   items.forEach((i, n) => {
     const p = catalog[i.slug];
     const qty = Math.min(20, Math.max(1, parseInt(i.qty, 10) || 1));
