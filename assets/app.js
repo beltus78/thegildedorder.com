@@ -58,6 +58,14 @@
     }).join("");
     var total = c.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
     document.querySelector("[data-cart-total]").textContent = money(total);
+    var sel = document.querySelector("[data-ship]");
+    if (sel) {
+      try { var saved = localStorage.getItem("gilded-ship"); if (saved) sel.value = saved; } catch (e) {}
+      var r = sel.value === "US" ? T.rates.US : T.rates.INTL, ship = !c.length || total >= r.freeOver ? 0 : r.rate;
+      document.querySelector("[data-ship-cost]").textContent = c.length ? (ship ? money(ship) : T.free) : "—";
+      document.querySelector("[data-grand]").textContent = money(total + ship);
+      if (!sel.dataset.bound) { sel.dataset.bound = 1; sel.addEventListener("change", function () { try { localStorage.setItem("gilded-ship", sel.value); } catch (e) {} render(); }); }
+    }
     box.querySelectorAll("input[data-idx]").forEach(function (inp) { inp.addEventListener("change", function () { var c = load(); c[inp.dataset.idx].qty = Math.max(1, parseInt(inp.value, 10) || 1); save(c); }); });
     box.querySelectorAll("[data-rm]").forEach(function (b) { b.addEventListener("click", function () { var c = load(); c.splice(b.dataset.rm, 1); save(c); }); });
   }
@@ -68,7 +76,7 @@
     var c = load(), msg = document.querySelector("[data-checkout-msg]");
     if (!c.length) { msg.textContent = T.empty; return; }
     co.disabled = true; msg.textContent = T.opening;
-    fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: c.map(function (i) { return { slug: i.slug, size: i.size, qty: i.qty }; }) }) })
+    fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ country: (document.querySelector("[data-ship]") || {}).value, items: c.map(function (i) { return { slug: i.slug, size: i.size, qty: i.qty }; }) }) })
       .then(function (r) { return r.json(); })
       .then(function (d) { if (d.url) location.href = d.url; else { msg.textContent = T.unavailable; co.disabled = false; } })
       .catch(function () { msg.textContent = T.unavailable; co.disabled = false; });

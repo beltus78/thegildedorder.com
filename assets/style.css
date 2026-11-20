@@ -141,3 +141,5 @@ img.is-ph{object-fit:cover}
 .foot-countries{margin-top:1rem;font-size:.8rem;color:var(--muted);line-height:1.8}.foot-countries a{display:inline!important;font-size:.8rem!important}
 .country-head .lead{margin-bottom:.8rem}.country-head .actions{margin:1.6rem 0 1rem}
 @media(max-width:960px){.steps,.join-inner{grid-template-columns:1fr}.join.inline{flex-direction:column}}
+
+.ship-to{display:flex;flex-direction:column;gap:6px;margin:14px 0 8px;font-size:.9rem}.ship-to select{background:#111;color:inherit;border:1px solid rgba(212,175,55,.4);border-radius:8px;padding:10px}

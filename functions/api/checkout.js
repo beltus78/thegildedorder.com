@@ -1,6 +1,7 @@
 // POST /api/checkout → creates a Stripe Checkout Session from the server-side catalogue.
 // Set the secret in Cloudflare Pages: Settings → Environment variables → STRIPE_SECRET_KEY
 import catalog from "../_catalog.js";
+import { SHIP_COUNTRIES, rateFor } from "../_shipping.js";
 
 export async function onRequestPost({ request, env }) {
   if (!env.STRIPE_SECRET_KEY) return json({ error: "Checkout opens soon. Please check back shortly." }, 503);
@@ -15,9 +16,19 @@ export async function onRequestPost({ request, env }) {
   form.set("success_url", origin + "/thank-you/");
   form.set("cancel_url", origin + "/cart/");
   form.set("allow_promotion_codes", "true");
-  // US + the African markets targeted by Ads/Merchant Center
-  ["US", "ZA", "KE", "CM", "CD", "ML", "TD", "CI", "SN"].forEach((c, n) =>
-    form.set(`shipping_address_collection[allowed_countries][${n}]`, c));
+  // Ship to the country chosen in the cart (US + African target markets)
+  const country = SHIP_COUNTRIES.includes(body.country) ? body.country : "US";
+  form.set("shipping_address_collection[allowed_countries][0]", country);
+  const subtotal = items.reduce((s, i) => s + catalog[i.slug].price * Math.min(20, Math.max(1, parseInt(i.qty, 10) || 1)), 0);
+  const r0 = rateFor(country), free = subtotal >= r0.freeOver;
+  form.set("shipping_options[0][shipping_rate_data][type]", "fixed_amount");
+  form.set("shipping_options[0][shipping_rate_data][display_name]", free ? "Free tracked shipping" : (country === "US" ? "Tracked shipping" : "Tracked international shipping"));
+  form.set("shipping_options[0][shipping_rate_data][fixed_amount][amount]", free ? 0 : Math.round(r0.rate * 100));
+  form.set("shipping_options[0][shipping_rate_data][fixed_amount][currency]", "usd");
+  form.set("shipping_options[0][shipping_rate_data][delivery_estimate][minimum][unit]", "business_day");
+  form.set("shipping_options[0][shipping_rate_data][delivery_estimate][minimum][value]", r0.min);
+  form.set("shipping_options[0][shipping_rate_data][delivery_estimate][maximum][unit]", "business_day");
+  form.set("shipping_options[0][shipping_rate_data][delivery_estimate][maximum][value]", r0.max);
   form.set("phone_number_collection[enabled]", "true");
   items.forEach((i, n) => {
     const p = catalog[i.slug];

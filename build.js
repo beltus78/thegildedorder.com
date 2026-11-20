@@ -1,3 +1,5 @@
+const SHIP = ["US", "ZA", "KE", "CM", "CD", "ML", "TD", "CI", "SN"];
+const RATES = { US: { rate: 5.95, freeOver: 50 }, INTL: { rate: 19.95, freeOver: 150 } }; // keep in sync with functions/_shipping.js
 // Static site generator for The Gilded Order. Run: node build.js  → outputs ./dist (Cloudflare Pages)
 // Languages: English at /, French at /fr/, Brazilian Portuguese at /pt/.
 const fs = require("fs");
@@ -65,7 +67,7 @@ for (const lang of LANGS) {
     const alts = opts.alts || Object.fromEntries(LANGS.map(lg => [lg, (lg === "en" ? "" : "/" + lg) + pp]));
     sitemap.push({ url: cfg.siteUrl + L(pp), alts });
   };
-  const jsStrings = { ...T.js, shop: L("/shop/"), placeholder: PH, wa: cfg.whatsapp };
+  const jsStrings = { ...T.js, rates: RATES, shop: L("/shop/"), placeholder: PH, wa: cfg.whatsapp };
 
   function layout({ title, desc, body, active = "", rel, alts, ld, fullTitle }) {
     const nav = [["/shop/", T.nav.shop, "shop"], ["/membership/", T.nav.membership, "membership"], ["/archive/", T.nav.archive, "archive"], ["/about/", T.nav.about, "about"]]
@@ -220,6 +222,9 @@ ${joinBand}
 <section class="wrap section cart">
   <div data-cart-items class="cart-items"></div>
   <aside class="cart-summary"><div class="row"><span>${T.subtotal}</span><strong data-cart-total>$0.00</strong></div>
+  <label class="ship-to">${T.js.shipTo}<select data-ship>${SHIP.map(c => `<option value="${c}">${esc(new Intl.DisplayNames([T.htmlLang], { type: "region" }).of(c))}</option>`).join("")}</select></label>
+  <div class="row"><span>${T.js.shippingL}</span><strong data-ship-cost>—</strong></div>
+  <div class="row"><span>${T.js.totalL}</span><strong data-grand>—</strong></div>
   <p class="fine">${T.shippingAtCheckout}</p>
   <button class="btn gold full" data-checkout>${T.checkout}</button><p class="fine" data-checkout-msg></p></aside>
 </section>` });
