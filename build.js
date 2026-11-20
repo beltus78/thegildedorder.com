@@ -1,6 +1,8 @@
 // Static site generator for The Gilded Order. Run: node build.js  → outputs ./dist (Cloudflare Pages)
 // Languages: English at /, French at /fr/, Brazilian Portuguese at /pt/.
 const fs = require("fs");
+// Meta descriptions: max 160 chars, cut at a word boundary.
+const clip160 = s => (s.length <= 160 ? s : s.slice(0, 159).replace(/\s+\S*$/, "") + "…");
 const path = require("path");
 const cfg = require("./site.config");
 const baseProducts = require("./data/products");
@@ -86,13 +88,13 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
 
   gtag('config', '${cfg.googleAdsId}');
 </script>` : ""}
-<title>${esc(fullTitle || (title ? title + " | " + cfg.name : cfg.name + " — " + T.tagline))}</title>
-<meta name="description" content="${esc(desc || T.tagline)}">
+<title>${esc(fullTitle || (title ? ((title + " | " + cfg.name).length > 65 ? title : title + " | " + cfg.name) : cfg.name + " — " + T.tagline))}</title>
+<meta name="description" content="${esc(clip160(desc || T.tagline))}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${cfg.name}"><meta property="og:url" content="${selfUrl}">
 <meta property="og:title" content="${esc(fullTitle || title || cfg.name)}"><meta property="og:description" content="${esc(desc || T.tagline)}">
 <meta property="og:image" content="${cfg.siteUrl}/assets/og-${lang}.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="${T.htmlLang.replace("-", "_")}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${cfg.siteUrl}/assets/og-${lang}.jpg">
-<link rel="canonical" href="${selfUrl}">${alt}
+${/^(cart|thank-you|404\.html)$/.test(rel) ? `<meta name="robots" content="noindex">` : `<link rel="canonical" href="${selfUrl}">${alt}`}
 ${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ""}
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -322,6 +324,9 @@ fs.writeFileSync(path.join(__dirname, "functions", "_catalog.js"),
 fs.writeFileSync(path.join(__dirname, "image-manifest.csv"),
   "product,photos,folder\n" + baseProducts.map(p => `"${p.name}",${imgCount(p)},images/products/${p.slug}/`).join("\n") + "\n");
 
+// IndexNow (Bing, Yandex, Seznam, Naver): key file at the site root.
+const INDEXNOW_KEY = "52447ccd075156206d1a9189cc54f7b6";
+fs.writeFileSync(path.join(OUT, INDEXNOW_KEY + ".txt"), INDEXNOW_KEY);
 fs.writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${cfg.siteUrl}/sitemap.xml\n`);
 {
   const today = new Date().toISOString().slice(0, 10);
