@@ -136,7 +136,7 @@ ${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ""}
   // prefer pieces that have photos; top up with other photographed pieces
   const withPhotos = (list, n) => { const ok = list.filter(p => imgCount(p) > 0); for (const p of products) { if (ok.length >= n) break; if (imgCount(p) > 0 && !ok.includes(p)) ok.push(p); } return ok.slice(0, n); };
   W("", { fullTitle: T.homeTitle, desc: T.homeDesc, ld: { "@context": "https://schema.org", "@graph": [
-    { "@type": "Organization", name: cfg.name, url: cfg.siteUrl, logo: cfg.siteUrl + "/assets/favicon.svg", contactPoint: { "@type": "ContactPoint", telephone: "+" + cfg.whatsapp, contactType: "customer service", availableLanguage: ["English", "French", "Portuguese"] } },
+    { "@type": "Organization", name: cfg.name, url: cfg.siteUrl, logo: cfg.siteUrl + "/assets/favicon.svg", contactPoint: { "@type": "ContactPoint", telephone: "+" + cfg.whatsapp, contactType: "customer service", availableLanguage: ["English", "French", "Portuguese"] }, address: { "@type": "PostalAddress", ...cfg.postal } },
     { "@type": "WebSite", name: cfg.name, url: cfg.siteUrl + L("/"), inLanguage: T.htmlLang }] }, body: `
 <section class="hero"><canvas class="dust" data-dust></canvas>${SIGIL}
 <div class="wrap hero-inner">
@@ -299,7 +299,7 @@ ${faq.map(([q, a]) => `  <details><summary>${esc(q)}</summary><p>${esc(a)}</p></
 <label class="field">${T.subject}<input name="subject" data-subject></label>
 <label class="field">${T.message}<textarea name="message" rows="6" required></textarea></label>
 <button class="btn wa">${WA_ICON} ${T.sendWa}</button><p class="fine">${esc(T.ctOpens(cfg.whatsappDisplay))}</p></form>
-<a class="wa-panel reveal" href="${wa(T.waHello)}" target="_blank" rel="noopener">${WA_ICON}<span>${T.orDirect}<strong>${cfg.whatsappDisplay}</strong></span></a></section>` });
+<a class="wa-panel reveal" href="${wa(T.waHello)}" target="_blank" rel="noopener">${WA_ICON}<span>${T.orDirect}<strong>${cfg.whatsappDisplay}</strong></span></a><p class="fine center" style="margin-top:18px">${esc(cfg.legalName)}<br>${esc(cfg.address)}</p></section>` });
 
   // ---------- LEGAL (templates — have them reviewed before launch) ----------
   for (const [k, [t, paras]] of Object.entries(T.legal)) {
