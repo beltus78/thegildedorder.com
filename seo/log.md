@@ -14,3 +14,9 @@ Content for SEO lives in data/content.js + data/articles.i18n.js (Archive articl
 - Titles: suffix dropped when the full title would pass 65 chars; titles still over 65 are cut at a word boundary.
 - Meta descriptions: under 110 chars are padded with the site tagline; over 160 clipped at a word boundary.
 - Search Console: property verified (Cloudflare DNS) and sitemap submitted.
+
+## 2026-11-21 — daily health check
+- Crawled all 219 sitemap URLs locally: all 200, one <h1>, canonicals/hreflang/og/JSON-LD OK.
+- Fixed: 11 products without photos (e.g. talisman-of-love, custom-blue-lodge-ring) linked /products/<slug>/1.jpg and 2.jpg, which 404 (22 broken image URLs on ~40 pages; the browser fell back to the placeholder via onerror). build.js now points those <img> straight at the placeholder SVG (same look).
+- Fixed: 6 descriptions were still under 110 chars after the tagline pad (/shop/, /shop/accessories/, /shop/decor/, /archive/, two articles) — a second short pad ("Questions answered on WhatsApp." / FR / PT) is added when needed.
+- Fixed: titles over 65 chars now drop a trailing " – category" before any word cut (the log said titles were cut, but the code only removed the suffix; e.g. FR onyx bat pendant was 71 chars).
