@@ -21,3 +21,6 @@ Content for SEO lives in data/content.js + data/articles.i18n.js (Archive articl
 - Fixed: 6 descriptions were still under 110 chars after the tagline pad (/shop/, /shop/accessories/, /shop/decor/, /archive/, two articles) — a second short pad ("Questions answered on WhatsApp." / FR / PT) is added when needed.
 - Fixed: titles over 65 chars now drop a trailing " – category" before any word cut (the log said titles were cut, but the code only removed the suffix; e.g. FR onyx bat pendant was 71 chars).
 - IndexNow: full sitemap submitted 2026-11-21 (219 URLs, HTTP 200 — covers the pages changed above).
+
+## 2026-11-22 — Google Ads "WhatsApp click" conversion
+- Every WhatsApp link (header, top bar, footer, product/contact buttons) and every form that opens WhatsApp now fires the Google Ads conversion AW-18579092076/4sO2CKCL-7wdEOzkmZtF ("WhatsApp click"). Config: `waConversion` in site.config.js; code in build.js head + `openWa` in assets/app.js.

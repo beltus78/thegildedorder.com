@@ -84,7 +84,7 @@
 
   // Forms → WhatsApp
   var WA = T.wa;
-  function openWa(text) { window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(text), "_blank", "noopener"); }
+  function openWa(text) { if (window.gtagWa) window.gtagWa(); window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(text), "_blank", "noopener"); }
   document.querySelectorAll("[data-join]").forEach(function (jf) {
     jf.addEventListener("submit", function (e) {
       e.preventDefault();

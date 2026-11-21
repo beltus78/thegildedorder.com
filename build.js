@@ -111,7 +111,10 @@ ${cfg.googleAdsId ? `<!-- Google tag (gtag.js) -->
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', '${cfg.googleAdsId}');
+  gtag('config', '${cfg.googleAdsId}');${cfg.waConversion ? `
+  // Google Ads conversion "WhatsApp click": any WhatsApp link or button (forms call window.gtagWa from app.js)
+  window.gtagWa = function () { gtag('event', 'conversion', { send_to: '${cfg.waConversion}', value: 1.0, currency: 'USD' }); };
+  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href*="wa.me/"]'); if (a) window.gtagWa(); }, true);` : ""}
 </script>` : ""}
 <title>${esc(fitTitle(fullTitle || (title ? ((title + " | " + cfg.name).length > 65 ? title : title + " | " + cfg.name) : cfg.name + " — " + T.tagline)))}</title>
 <meta name="description" content="${esc(clip160(desc ? padDesc(desc, T.tagline, lang) : (title ? title + " — " : "") + SITE_DESC[lang]))}">
