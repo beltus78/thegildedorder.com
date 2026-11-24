@@ -8,8 +8,8 @@ module.exports = {
   whatsapp: "15797940146",                // WhatsApp number, digits only (country code first)
   whatsappDisplay: "+1 579 794 0146",
   legalName: "The Gilded Order",
-  address: "21255 Burbank Boulevard, Los Angeles, CA 91367, United States",
-  postal: { streetAddress: "21255 Burbank Boulevard", addressLocality: "Los Angeles", addressRegion: "CA", postalCode: "91367", addressCountry: "US" },
+  address: "21255 Burbank Boulevard, Woodland Hills, CA 91367, United States",
+  postal: { streetAddress: "21255 Burbank Boulevard", addressLocality: "Woodland Hills", addressRegion: "CA", postalCode: "91367", addressCountry: "US" },
   googleAdsId: "AW-18579092076",           // Google Ads tag (gtag.js)
   waConversion: "AW-18579092076/4sO2CKCL-7wdEOzkmZtF", // Google Ads conversion "WhatsApp click" (fires on every WhatsApp link/button)
   currency: "USD",
