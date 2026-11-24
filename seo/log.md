@@ -24,3 +24,12 @@ Content for SEO lives in data/content.js + data/articles.i18n.js (Archive articl
 
 ## 2026-11-22 — Google Ads "WhatsApp click" conversion
 - Every WhatsApp link (header, top bar, footer, product/contact buttons) and every form that opens WhatsApp now fires the Google Ads conversion AW-18579092076/4sO2CKCL-7wdEOzkmZtF ("WhatsApp click"). Config: `waConversion` in site.config.js; code in build.js head + `openWa` in assets/app.js.
+
+## 2026-11-24 — Tue article: Memento Mori
+- New Archive article (EN/FR/PT): /archive/memento-mori/, /fr/archive/memento-mori/, /pt/archive/memento-mori/ — "Memento Mori: Meaning, History and How to Wear a Skull Ring". Target keyword: "memento mori meaning" (+ "memento mori ring", "skull ring meaning"; FR "memento mori signification", PT "memento mori significado"). ~1,000 words per language.
+- History kept to sourced facts (Tertullian on the triumph, with the caveat that the exact phrase isn't in the source; Seneca, Marcus Aurelius, Epictetus; Dance of Death at the Holy Innocents, Paris, 1420s; 16th–17th c. skull rings; Shakespeare's 1616 will leaving money for rings; mourning rings; vanitas). No supernatural claims; a respectful "is it unlucky?" answer for buyers.
+- build.js: Archive articles can now have optional `desc` (meta description), `seoTitle` and `shop` (CTA category) in data/content.js, plus [desc, seoTitle] as items 4–5 in data/articles.i18n.js; paragraphs starting with "## " render as <h2> and [text](/path) as localised internal links. Older articles render unchanged.
+- Internal links (all 200 locally, each language): /shop/p/memento-mori-inlay-signet/, /shop/p/emblem-skull-steel-ring/, /shop/rings/, /archive/ouroboros/, /archive/as-above-so-below/, /membership/, /contact/. On /archive/ and in sitemap.xml with hreflang.
+- Search Console: sc-domain:thegildedorder.com is not yet available in Windsor.ai — topic chosen from keyword research.
+- Next ideas: sacred geometry (Flower of Life, Metatron's cube — decor pieces), witch's knot meaning, triple moon, Templar cross vs other crosses, gift guide for Father's Day / graduation in South Africa & Kenya, "how to choose a signet ring".
+

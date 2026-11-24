@@ -77,7 +77,7 @@ for (const lang of LANGS) {
   const L = p => pre + p;                 // localise an internal link
   const CATS = Object.fromEntries(CAT_KEYS.map(k => [k, { name: T.cats[k][0], blurb: T.cats[k][1] }]));
   const products = baseProducts.map(p => lang === "en" ? p : { ...p, name: PT[p.slug][lang][0], desc: PT[p.slug][lang][1] });
-  const articles = baseArticles.map(a => lang === "en" ? a : { ...a, title: AT[a.slug][lang][0], teaser: AT[a.slug][lang][1], body: AT[a.slug][lang][2] });
+  const articles = baseArticles.map(a => lang === "en" ? a : { ...a, title: AT[a.slug][lang][0], teaser: AT[a.slug][lang][1], body: AT[a.slug][lang][2], desc: AT[a.slug][lang][3], seoTitle: AT[a.slug][lang][4] });
   const PH = placeholderFile(lang);
   // No photo on disk → point straight at the placeholder (same look as the onerror fallback, no 404 image URL in the HTML).
   const img = (p, n, cls = "") => imgCount(p) < n && !cfg.imageBase
@@ -279,11 +279,13 @@ ${articles.map(a => `<a class="article-card reveal" href="${L(`/archive/${a.slug
 <a class="article-card cipher-card" href="${L("/archive/cipher/")}"><h3>${T.cipherOfMonth}</h3><p>${esc(T.cipherCard)}</p><span>${T.play}</span></a>
 </div></section>` });
   const shopFor = { "eye-of-providence": "eye", "square-and-compass": "rings", ouroboros: "eye", "the-pentagram": "pendants", "as-above-so-below": "decor", "knights-templar": "accessories" };
+  // Article paragraphs: "## " starts a subheading; [text](/path) is an internal link (localised).
+  const artInline = t => esc(t).replace(/\[([^\]]+)\]\((\/[^)\s]*)\)/g, (_, txt, u) => `<a href="${L(u)}">${txt}</a>`);
   for (const a of articles) {
-    const c = shopFor[a.slug];
-    W(`archive/${a.slug}`, { title: a.title, desc: a.teaser, active: "archive", body: `
+    const c = a.shop || shopFor[a.slug];
+    W(`archive/${a.slug}`, { title: a.title, fullTitle: a.seoTitle, desc: a.desc || a.teaser, active: "archive", body: `
 <article class="wrap narrow article"><a class="crumb" href="${L("/archive/")}">← ${T.aTitle}</a><h1>${esc(a.title)}</h1><p class="lead">${esc(a.teaser)}</p>
-${a.body.map(p => `<p>${esc(p)}</p>`).join("")}
+${a.body.map(p => p.startsWith("## ") ? `<h2>${artInline(p.slice(3))}</h2>` : `<p>${artInline(p)}</p>`).join("")}
 <div class="article-cta"><p>${T.inspired}</p><a class="btn gold" href="${L(`/shop/${c}/`)}">${esc(T.shopCat(CATS[c].name))}</a></div></article>` });
   }
   W("archive/cipher", { title: T.cipherOfMonth, active: "archive", body: `
