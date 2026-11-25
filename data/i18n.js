@@ -171,7 +171,7 @@ module.exports = {
       "Nous avons fondé The Gilded Order pour réunir ces symboles en un lieu honnête : une boutique de pièces choisies avec soin, un club pour celles et ceux qui aiment leur histoire, et des archives qui racontent les faits plutôt que les mythes.",
       "Nous sommes une entreprise basée aux États-Unis qui vend des bijoux et des objets, et qui propose une adhésion gratuite aux avantages clairement listés. Nous ne sommes pas une société secrète, nous ne contactons jamais personne en premier pour recruter, et nous n’avons aucun lien avec la franc-maçonnerie ni avec un ordre fraternel.",
       "Nos pièces proviennent de fabricants et de grossistes reconnus. Les noms et descriptions des produits sur ce site sont les nôtres."],
-    ctTitle: "Contact", ctH1: "Nous contacter", ctLead: "Une question sur une commande, une bague sur mesure ou l’adhésion ? Écrivez-nous sur WhatsApp. Nous répondons en général dans la journée.",
+    ctTitle: "Nous contacter", ctH1: "Nous contacter", ctLead: "Une question sur une commande, une bague sur mesure ou l’adhésion ? Écrivez-nous sur WhatsApp. Nous répondons en général dans la journée.",
     name: "Nom", subject: "Objet", message: "Message", sendWa: "Envoyer sur WhatsApp",
     ctOpens: num => `Ouvre WhatsApp avec votre message prêt à être envoyé au ${num}.`, orDirect: "Ou écrivez-nous directement",
     template: "Modèle, à faire relire avant le lancement.",

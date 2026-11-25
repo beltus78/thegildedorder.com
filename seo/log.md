@@ -33,3 +33,7 @@ Content for SEO lives in data/content.js + data/articles.i18n.js (Archive articl
 - Search Console: sc-domain:thegildedorder.com is not yet available in Windsor.ai — topic chosen from keyword research.
 - Next ideas: sacred geometry (Flower of Life, Metatron's cube — decor pieces), witch's knot meaning, triple moon, Templar cross vs other crosses, gift guide for Father's Day / graduation in South Africa & Kenya, "how to choose a signet ring".
 
+
+## 2026-11-25 — SEO audit (all sitemap URLs)
+**Crawled:** all 222 sitemap URLs on a local build (all 200, one <h1> each, titles ≤65 and descriptions 70–160 chars, canonicals + og tags present, JSON-LD valid, no broken internal links or missing images/assets, robots.txt + sitemap valid).
+**Found & fixed:** /fr/contact/ had the same title as /contact/ ("Contact | The Gilded Order") → FR `ctTitle` is now "Nous contacter" (data/i18n.js).
